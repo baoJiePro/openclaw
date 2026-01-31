@@ -1,0 +1,473 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-01-30T10:59:27.000Z",
+  "repository": {
+    "name": "openclaw",
+    "url": "https://github.com/openclaw/openclaw",
+    "branch": "develop-bj",
+    "description": "Personal AI Assistant - Multi-platform AI agent with messaging channels",
+    "language": "TypeScript",
+    "runtime": "Node.js 22+"
+  },
+  "summary": {
+    "totalFiles": 3500,
+    "scannedFiles": 890,
+    "coveragePercent": 25,
+    "truncated": true,
+    "ignoreRules": [
+      "node_modules/**",
+      ".git/**",
+      "dist/**",
+      "build/**",
+      ".next/**",
+      "__pycache__/**",
+      "*.lock",
+      "*.log",
+      "*.bin",
+      "*.pdf",
+      "*.png",
+      "*.jpg",
+      "*.jpeg",
+      "*.gif",
+      "*.mp4",
+      "*.zip",
+      "*.tar",
+      "*.gz",
+      ".DS_Store",
+      "ui/src/ui/__screenshots__/",
+      "ui/playwright-report/",
+      "ui/test-results/",
+      "*.bun-build",
+      "bin/",
+      "**/ModuleCache/",
+      "Core/",
+      "**/*.xcworkspace/",
+      "**/.swiftpm/",
+      "vendor/**",
+      "ui/node_modules/**"
+    ]
+  },
+  "rootModule": {
+    "path": "/Users/baojie/Documents/myProject/openclaw",
+    "name": "openclaw",
+    "type": "root",
+    "description": "Personal AI Assistant - CLI, Gateway, Mobile & Desktop Apps",
+    "entryPoints": [
+      "openclaw.mjs",
+      "src/index.ts",
+      "src/entry.ts"
+    ],
+    "documentation": "CLAUDE.md",
+    "keyFiles": [
+      "package.json",
+      "tsconfig.json",
+      "vitest.config.ts",
+      "README.md",
+      "CHANGELOG.md"
+    ],
+    "directories": {
+      "src": "Core TypeScript source code",
+      "apps": "Mobile and desktop applications",
+      "extensions": "Plugin extensions (channels, providers)",
+      "docs": "Documentation",
+      "scripts": "Build and utility scripts",
+      "test": "Test files"
+    }
+  },
+  "modules": [
+    {
+      "name": "cli",
+      "path": "src/cli",
+      "type": "core",
+      "description": "CLI framework, command parser, and user interaction",
+      "entryPoints": ["src/cli/program/build-command.ts"],
+      "interfaces": ["CommandBuilder", "Prompter", "ProgressIndicator"],
+      "dependencies": ["commander", "@clack/prompts", "osc-progress"],
+      "tests": true,
+      "coverage": "high",
+      "keyFiles": [
+        "src/cli/program/build-command.ts",
+        "src/cli/deps.ts",
+        "src/cli/progress.ts",
+        "src/cli/prompt.ts"
+      ]
+    },
+    {
+      "name": "commands",
+      "path": "src/commands",
+      "type": "core",
+      "description": "CLI command implementations (agent, channels, configure, doctor, etc.)",
+      "entryPoints": ["src/commands/agent.ts", "src/commands/channels.ts", "src/commands/configure.ts"],
+      "interfaces": [],
+      "dependencies": ["src/cli", "src/config", "src/gateway"],
+      "tests": true,
+      "coverage": "high",
+      "keyFiles": [
+        "src/commands/agent.ts",
+        "src/commands/channels.ts",
+        "src/commands/configure.ts",
+        "src/commands/doctor*.ts"
+      ]
+    },
+    {
+      "name": "gateway",
+      "path": "src/gateway",
+      "type": "core",
+      "description": "Gateway server - control plane for agents, channels, and devices",
+      "entryPoints": ["src/gateway/server.ts", "src/gateway/boot.ts"],
+      "interfaces": ["GatewayServer", "GatewayProtocol", "ControlUI"],
+      "dependencies": ["express", "ws", "src/channels", "src/agents"],
+      "tests": true,
+      "coverage": "high",
+      "keyFiles": [
+        "src/gateway/server.ts",
+        "src/gateway/boot.ts",
+        "src/gateway/server-methods/"
+      ]
+    },
+    {
+      "name": "channels",
+      "path": "src/channels",
+      "type": "core",
+      "description": "Channel plugin system and shared channel logic",
+      "entryPoints": ["src/channels/plugins/index.ts", "src/channels/registry.ts"],
+      "interfaces": ["ChannelPlugin", "ChannelAdapter", "ChannelDock"],
+      "dependencies": ["src/plugin-sdk", "src/config"],
+      "tests": true,
+      "coverage": "high",
+      "keyFiles": [
+        "src/channels/plugins/types.ts",
+        "src/channels/plugins/catalog.ts",
+        "src/channels/registry.ts"
+      ]
+    },
+    {
+      "name": "agents",
+      "path": "src/agents",
+      "type": "core",
+      "description": "AI agent runtime - model integration, tools, and session management",
+      "entryPoints": ["src/agents/cli-runner.ts"],
+      "interfaces": ["AgentRunner", "AuthProvider", "ToolRegistry"],
+      "dependencies": ["@mariozechner/pi-agent-core", "src/config"],
+      "tests": true,
+      "coverage": "high",
+      "keyFiles": [
+        "src/agents/cli-runner.ts",
+        "src/agents/auth-profiles.ts",
+        "src/agents/bash-tools.ts"
+      ]
+    },
+    {
+      "name": "config",
+      "path": "src/config",
+      "type": "core",
+      "description": "Configuration loading, validation, and management",
+      "entryPoints": ["src/config/config.ts"],
+      "interfaces": ["OpenClawConfig", "ConfigIO"],
+      "dependencies": ["zod"],
+      "tests": true,
+      "coverage": "high",
+      "keyFiles": [
+        "src/config/io.ts",
+        "src/config/types.ts",
+        "src/config/schema.ts"
+      ]
+    },
+    {
+      "name": "web",
+      "path": "src/web",
+      "type": "core",
+      "description": "WhatsApp Web integration (Baileys)",
+      "entryPoints": ["src/web/login.ts", "src/web/monitor.ts"],
+      "interfaces": [],
+      "dependencies": ["@whiskeysockets/baileys"],
+      "tests": true,
+      "coverage": "high",
+      "keyFiles": [
+        "src/web/login.ts",
+        "src/web/auto-reply.ts",
+        "src/web/inbound.ts"
+      ]
+    },
+    {
+      "name": "telegram",
+      "path": "src/telegram",
+      "type": "core",
+      "description": "Telegram bot integration",
+      "entryPoints": ["src/telegram/bot.ts", "src/telegram/webhook.ts"],
+      "interfaces": [],
+      "dependencies": ["grammy"],
+      "tests": true,
+      "coverage": "high",
+      "keyFiles": [
+        "src/telegram/bot.ts",
+        "src/telegram/send.ts",
+        "src/telegram/monitor.ts"
+      ]
+    },
+    {
+      "name": "discord",
+      "path": "src/discord",
+      "type": "core",
+      "description": "Discord bot integration",
+      "entryPoints": ["src/discord/monitor.ts"],
+      "interfaces": [],
+      "dependencies": ["discord-api-types"],
+      "tests": false,
+      "coverage": "medium",
+      "keyFiles": [
+        "src/discord/monitor.ts",
+        "src/discord/send.ts"
+      ]
+    },
+    {
+      "name": "slack",
+      "path": "src/slack",
+      "type": "core",
+      "description": "Slack bot integration",
+      "entryPoints": ["src/slack/monitor.ts"],
+      "interfaces": [],
+      "dependencies": ["@slack/bolt", "@slack/web-api"],
+      "tests": false,
+      "coverage": "medium",
+      "keyFiles": [
+        "src/slack/monitor.ts",
+        "src/slack/send.ts"
+      ]
+    },
+    {
+      "name": "signal",
+      "path": "src/signal",
+      "type": "core",
+      "description": "Signal messenger integration",
+      "entryPoints": ["src/signal/monitor.ts"],
+      "interfaces": [],
+      "dependencies": [],
+      "tests": false,
+      "coverage": "medium",
+      "keyFiles": [
+        "src/signal/monitor.ts",
+        "src/signal/send.ts"
+      ]
+    },
+    {
+      "name": "imessage",
+      "path": "src/imessage",
+      "type": "core",
+      "description": "iMessage integration (macOS)",
+      "entryPoints": ["src/imessage/monitor.ts"],
+      "interfaces": [],
+      "dependencies": [],
+      "tests": false,
+      "coverage": "medium",
+      "keyFiles": [
+        "src/imessage/monitor.ts",
+        "src/imessage/send.ts"
+      ]
+    },
+    {
+      "name": "line",
+      "path": "src/line",
+      "type": "core",
+      "description": "LINE messaging integration",
+      "entryPoints": ["src/line/monitor.ts"],
+      "interfaces": [],
+      "dependencies": ["@line/bot-sdk"],
+      "tests": false,
+      "coverage": "medium",
+      "keyFiles": [
+        "src/line/monitor.ts",
+        "src/line/send.ts"
+      ]
+    },
+    {
+      "name": "browser",
+      "path": "src/browser",
+      "type": "core",
+      "description": "Browser automation (Playwright/CDP)",
+      "entryPoints": ["src/browser/client.ts", "src/browser/server.ts"],
+      "interfaces": ["BrowserClient", "PWSession"],
+      "dependencies": ["playwright-core"],
+      "tests": true,
+      "coverage": "high",
+      "keyFiles": [
+        "src/browser/client.ts",
+        "src/browser/pw-session.ts",
+        "src/browser/routes/"
+      ]
+    },
+    {
+      "name": "media",
+      "path": "src/media",
+      "type": "core",
+      "description": "Media processing and understanding pipeline",
+      "entryPoints": ["src/media/index.ts"],
+      "interfaces": [],
+      "dependencies": ["sharp", "pdfjs-dist"],
+      "tests": true,
+      "coverage": "medium",
+      "keyFiles": [
+        "src/media/mime.ts",
+        "src/media/store.ts",
+        "src/media/ocr.ts"
+      ]
+    },
+    {
+      "name": "plugin-sdk",
+      "path": "src/plugin-sdk",
+      "type": "core",
+      "description": "Plugin SDK for external extensions",
+      "entryPoints": ["src/plugin-sdk/index.ts"],
+      "interfaces": ["OpenClawPluginApi", "ChannelPlugin"],
+      "dependencies": [],
+      "tests": false,
+      "coverage": "medium",
+      "keyFiles": [
+        "src/plugin-sdk/index.ts",
+        "src/channels/plugins/types.ts"
+      ]
+    },
+    {
+      "name": "routing",
+      "path": "src/routing",
+      "type": "core",
+      "description": "Message routing and session key resolution",
+      "entryPoints": ["src/routing/resolve-route.ts"],
+      "interfaces": [],
+      "dependencies": [],
+      "tests": true,
+      "coverage": "high",
+      "keyFiles": [
+        "src/routing/resolve-route.ts",
+        "src/routing/session-key.ts"
+      ]
+    },
+    {
+      "name": "extensions",
+      "path": "extensions",
+      "type": "extensions",
+      "description": "Plugin extensions (channels, providers, tools)",
+      "plugins": [
+        "telegram",
+        "discord",
+        "slack",
+        "signal",
+        "imessage",
+        "whatsapp",
+        "matrix",
+        "googlechat",
+        "msteams",
+        "mattermost",
+        "nextcloud-talk",
+        "bluebubbles",
+        "line",
+        "nostr",
+        "twitch",
+        "zalo",
+        "zalouser",
+        "tlon",
+        "voice-call",
+        "llm-task",
+        "lobster",
+        "copilot-proxy",
+        "google-antigravity-auth",
+        "google-gemini-cli-auth",
+        "diagnostics-otel",
+        "memory-core",
+        "memory-lancedb",
+        "open-prose"
+      ],
+      "tests": true,
+      "coverage": "medium"
+    },
+    {
+      "name": "android",
+      "path": "apps/android",
+      "type": "app",
+      "description": "Android mobile app (Kotlin)",
+      "entryPoints": ["app/src/main/java/ai/openclaw/android/MainActivity.kt"],
+      "interfaces": [],
+      "dependencies": [],
+      "tests": true,
+      "coverage": "low",
+      "keyFiles": [
+        "apps/android/app/build.gradle.kts",
+        "apps/android/app/src/main/java/ai/openclaw/android/MainActivity.kt"
+      ]
+    },
+    {
+      "name": "ios",
+      "path": "apps/ios",
+      "type": "app",
+      "description": "iOS mobile app (Swift/SwiftUI)",
+      "entryPoints": ["apps/ios/Sources/OpenClawApp.swift"],
+      "interfaces": [],
+      "dependencies": [],
+      "tests": true,
+      "coverage": "low",
+      "keyFiles": [
+        "apps/ios/project.yml",
+        "apps/ios/Sources/OpenClawApp.swift"
+      ]
+    },
+    {
+      "name": "macos",
+      "path": "apps/macos",
+      "type": "app",
+      "description": "macOS desktop app (Swift/SwiftUI)",
+      "entryPoints": ["apps/macos/Sources/OpenClaw/OpenClawApp.swift"],
+      "interfaces": [],
+      "dependencies": [],
+      "tests": false,
+      "coverage": "low",
+      "keyFiles": [
+        "apps/macos/Package.swift",
+        "apps/macos/Sources/OpenClaw/OpenClawApp.swift"
+      ]
+    },
+    {
+      "name": "ui",
+      "path": "ui",
+      "type": "app",
+      "description": "Web UI (React/Vite)",
+      "entryPoints": ["ui/src/main.tsx"],
+      "interfaces": [],
+      "dependencies": [],
+      "tests": true,
+      "coverage": "low",
+      "keyFiles": [
+        "ui/package.json",
+        "ui/src/main.tsx"
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "module": "android",
+      "missing": ["deep architecture scan"],
+      "reason": "Large codebase, scanned file headers only"
+    },
+    {
+      "module": "ios",
+      "missing": ["deep architecture scan"],
+      "reason": "Large codebase, scanned file headers only"
+    },
+    {
+      "module": "macos",
+      "missing": ["deep architecture scan"],
+      "reason": "Large codebase, scanned file headers only"
+    },
+    {
+      "module": "extensions",
+      "missing": ["detailed plugin architecture"],
+      "reason": "Many plugins, scanned key files only"
+    }
+  ],
+  "nextSteps": [
+    "Deep scan apps/android for full architecture",
+    "Deep scan apps/ios for full architecture",
+    "Deep scan apps/macos for full architecture",
+    "Detailed scan of each extension plugin",
+    "Scan docs/ for content structure"
+  ]
+}
