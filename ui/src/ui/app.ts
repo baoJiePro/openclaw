@@ -75,6 +75,7 @@ import {
 } from "./app-channels";
 import type { NostrProfileFormState } from "./views/channels.nostr-profile-form";
 import { loadAssistantIdentity as loadAssistantIdentityInternal } from "./controllers/assistant-identity";
+import { subscribeLocale } from "./i18n";
 
 declare global {
   interface Window {
@@ -262,6 +263,7 @@ export class OpenClawApp extends LitElement {
   private themeMedia: MediaQueryList | null = null;
   private themeMediaHandler: ((event: MediaQueryListEvent) => void) | null = null;
   private topbarObserver: ResizeObserver | null = null;
+  private localeUnsubscribe: (() => void) | null = null;
 
   createRenderRoot() {
     return this;
@@ -269,6 +271,7 @@ export class OpenClawApp extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
+    this.localeUnsubscribe = subscribeLocale(() => this.requestUpdate());
     handleConnected(this as unknown as Parameters<typeof handleConnected>[0]);
   }
 
@@ -277,6 +280,7 @@ export class OpenClawApp extends LitElement {
   }
 
   disconnectedCallback() {
+    this.localeUnsubscribe?.();
     handleDisconnected(this as unknown as Parameters<typeof handleDisconnected>[0]);
     super.disconnectedCallback();
   }

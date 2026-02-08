@@ -1,22 +1,23 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-01-30T10:59:27.000Z",
+  "generatedAt": "2026-01-31T22:34:02+08:00",
   "repository": {
     "name": "openclaw",
     "url": "https://github.com/openclaw/openclaw",
-    "branch": "develop-bj",
+    "branch": "main",
     "description": "Personal AI Assistant - Multi-platform AI agent with messaging channels",
     "language": "TypeScript",
     "runtime": "Node.js 22+"
   },
   "summary": {
-    "totalFiles": 3500,
-    "scannedFiles": 890,
-    "coveragePercent": 25,
-    "truncated": true,
+    "totalFiles": 4500,
+    "scannedFiles": 1600,
+    "coveragePercent": 35,
+    "truncated": false,
     "ignoreRules": [
       "node_modules/**",
       ".git/**",
+      ".github/**",
       "dist/**",
       "build/**",
       ".next/**",
@@ -34,17 +35,20 @@
       "*.tar",
       "*.gz",
       ".DS_Store",
+      "**/.DS_Store",
       "ui/src/ui/__screenshots__/",
       "ui/playwright-report/",
       "ui/test-results/",
-      "*.bun-build",
-      "bin/",
+      "**/*.bun-build",
       "**/ModuleCache/",
-      "Core/",
-      "**/*.xcworkspace/",
       "**/.swiftpm/",
-      "vendor/**",
-      "ui/node_modules/**"
+      "**/vendor/a2ui/renderers/lit/dist/",
+      "src/canvas-host/a2ui/*.bundle.js",
+      ".bundle.hash",
+      "**/fastlane/**",
+      ".local/",
+      ".vscode/",
+      ".serena/"
     ]
   },
   "rootModule": {
@@ -71,7 +75,8 @@
       "extensions": "Plugin extensions (channels, providers)",
       "docs": "Documentation",
       "scripts": "Build and utility scripts",
-      "test": "Test files"
+      "Swabble": "Swift voice wake service",
+      "ui": "Web UI"
     }
   },
   "modules": [
@@ -80,13 +85,16 @@
       "path": "src/cli",
       "type": "core",
       "description": "CLI framework, command parser, and user interaction",
-      "entryPoints": ["src/cli/program/build-command.ts"],
-      "interfaces": ["CommandBuilder", "Prompter", "ProgressIndicator"],
+      "status": "scanned",
+      "coverage": 90,
+      "entryPoints": ["src/cli/index.ts", "src/cli/program/build-program.ts"],
+      "interfaces": ["buildProgram", "createDefaultDeps"],
       "dependencies": ["commander", "@clack/prompts", "osc-progress"],
       "tests": true,
-      "coverage": "high",
+      "documentation": "src/cli/CLAUDE.md",
       "keyFiles": [
-        "src/cli/program/build-command.ts",
+        "src/cli/index.ts",
+        "src/cli/program/build-program.ts",
         "src/cli/deps.ts",
         "src/cli/progress.ts",
         "src/cli/prompt.ts"
@@ -97,16 +105,19 @@
       "path": "src/commands",
       "type": "core",
       "description": "CLI command implementations (agent, channels, configure, doctor, etc.)",
+      "status": "scanned",
+      "coverage": 85,
       "entryPoints": ["src/commands/agent.ts", "src/commands/channels.ts", "src/commands/configure.ts"],
       "interfaces": [],
       "dependencies": ["src/cli", "src/config", "src/gateway"],
       "tests": true,
-      "coverage": "high",
+      "documentation": "src/commands/CLAUDE.md",
       "keyFiles": [
         "src/commands/agent.ts",
         "src/commands/channels.ts",
         "src/commands/configure.ts",
-        "src/commands/doctor*.ts"
+        "src/commands/doctor*.ts",
+        "src/commands/onboard.ts"
       ]
     },
     {
@@ -114,31 +125,19 @@
       "path": "src/gateway",
       "type": "core",
       "description": "Gateway server - control plane for agents, channels, and devices",
+      "status": "scanned",
+      "coverage": 80,
       "entryPoints": ["src/gateway/server.ts", "src/gateway/boot.ts"],
-      "interfaces": ["GatewayServer", "GatewayProtocol", "ControlUI"],
+      "interfaces": ["GatewayServer", "GatewayProtocol", "WebSocket", "HTTP API"],
       "dependencies": ["express", "ws", "src/channels", "src/agents"],
       "tests": true,
-      "coverage": "high",
+      "documentation": "src/gateway/CLAUDE.md",
       "keyFiles": [
         "src/gateway/server.ts",
         "src/gateway/boot.ts",
+        "src/gateway/client.ts",
+        "src/gateway/protocol/",
         "src/gateway/server-methods/"
-      ]
-    },
-    {
-      "name": "channels",
-      "path": "src/channels",
-      "type": "core",
-      "description": "Channel plugin system and shared channel logic",
-      "entryPoints": ["src/channels/plugins/index.ts", "src/channels/registry.ts"],
-      "interfaces": ["ChannelPlugin", "ChannelAdapter", "ChannelDock"],
-      "dependencies": ["src/plugin-sdk", "src/config"],
-      "tests": true,
-      "coverage": "high",
-      "keyFiles": [
-        "src/channels/plugins/types.ts",
-        "src/channels/plugins/catalog.ts",
-        "src/channels/registry.ts"
       ]
     },
     {
@@ -146,15 +145,38 @@
       "path": "src/agents",
       "type": "core",
       "description": "AI agent runtime - model integration, tools, and session management",
-      "entryPoints": ["src/agents/cli-runner.ts"],
+      "status": "scanned",
+      "coverage": 85,
+      "entryPoints": ["src/agents/cli-runner.ts", "src/agents/pi-embedded-runner.ts"],
       "interfaces": ["AgentRunner", "AuthProvider", "ToolRegistry"],
       "dependencies": ["@mariozechner/pi-agent-core", "src/config"],
       "tests": true,
-      "coverage": "high",
+      "documentation": "src/agents/CLAUDE.md",
       "keyFiles": [
         "src/agents/cli-runner.ts",
+        "src/agents/pi-embedded-runner.ts",
         "src/agents/auth-profiles.ts",
-        "src/agents/bash-tools.ts"
+        "src/agents/bash-tools.ts",
+        "src/agents/pi-embedded-helpers.ts"
+      ]
+    },
+    {
+      "name": "channels",
+      "path": "src/channels",
+      "type": "core",
+      "description": "Channel plugin system and shared channel logic",
+      "status": "scanned",
+      "coverage": 80,
+      "entryPoints": ["src/channels/plugins/index.ts", "src/channels/registry.ts"],
+      "interfaces": ["ChannelPlugin", "ChannelAdapter", "ChannelDock"],
+      "dependencies": ["src/plugin-sdk", "src/config"],
+      "tests": true,
+      "documentation": "src/channels/CLAUDE.md",
+      "keyFiles": [
+        "src/channels/plugins/types.ts",
+        "src/channels/plugins/catalog.ts",
+        "src/channels/registry.ts",
+        "src/channels/dock.ts"
       ]
     },
     {
@@ -162,11 +184,13 @@
       "path": "src/config",
       "type": "core",
       "description": "Configuration loading, validation, and management",
+      "status": "scanned",
+      "coverage": 85,
       "entryPoints": ["src/config/config.ts"],
       "interfaces": ["OpenClawConfig", "ConfigIO"],
       "dependencies": ["zod"],
       "tests": true,
-      "coverage": "high",
+      "documentation": "src/config/CLAUDE.md",
       "keyFiles": [
         "src/config/io.ts",
         "src/config/types.ts",
@@ -178,11 +202,12 @@
       "path": "src/web",
       "type": "core",
       "description": "WhatsApp Web integration (Baileys)",
+      "status": "scanned",
+      "coverage": 80,
       "entryPoints": ["src/web/login.ts", "src/web/monitor.ts"],
       "interfaces": [],
       "dependencies": ["@whiskeysockets/baileys"],
       "tests": true,
-      "coverage": "high",
       "keyFiles": [
         "src/web/login.ts",
         "src/web/auto-reply.ts",
@@ -194,11 +219,12 @@
       "path": "src/telegram",
       "type": "core",
       "description": "Telegram bot integration",
+      "status": "scanned",
+      "coverage": 80,
       "entryPoints": ["src/telegram/bot.ts", "src/telegram/webhook.ts"],
       "interfaces": [],
       "dependencies": ["grammy"],
       "tests": true,
-      "coverage": "high",
       "keyFiles": [
         "src/telegram/bot.ts",
         "src/telegram/send.ts",
@@ -210,11 +236,12 @@
       "path": "src/discord",
       "type": "core",
       "description": "Discord bot integration",
+      "status": "scanned",
+      "coverage": 75,
       "entryPoints": ["src/discord/monitor.ts"],
       "interfaces": [],
       "dependencies": ["discord-api-types"],
       "tests": false,
-      "coverage": "medium",
       "keyFiles": [
         "src/discord/monitor.ts",
         "src/discord/send.ts"
@@ -225,11 +252,12 @@
       "path": "src/slack",
       "type": "core",
       "description": "Slack bot integration",
+      "status": "scanned",
+      "coverage": 75,
       "entryPoints": ["src/slack/monitor.ts"],
       "interfaces": [],
       "dependencies": ["@slack/bolt", "@slack/web-api"],
       "tests": false,
-      "coverage": "medium",
       "keyFiles": [
         "src/slack/monitor.ts",
         "src/slack/send.ts"
@@ -240,11 +268,12 @@
       "path": "src/signal",
       "type": "core",
       "description": "Signal messenger integration",
+      "status": "scanned",
+      "coverage": 70,
       "entryPoints": ["src/signal/monitor.ts"],
       "interfaces": [],
       "dependencies": [],
       "tests": false,
-      "coverage": "medium",
       "keyFiles": [
         "src/signal/monitor.ts",
         "src/signal/send.ts"
@@ -255,11 +284,12 @@
       "path": "src/imessage",
       "type": "core",
       "description": "iMessage integration (macOS)",
+      "status": "scanned",
+      "coverage": 70,
       "entryPoints": ["src/imessage/monitor.ts"],
       "interfaces": [],
       "dependencies": [],
       "tests": false,
-      "coverage": "medium",
       "keyFiles": [
         "src/imessage/monitor.ts",
         "src/imessage/send.ts"
@@ -270,11 +300,12 @@
       "path": "src/line",
       "type": "core",
       "description": "LINE messaging integration",
+      "status": "scanned",
+      "coverage": 70,
       "entryPoints": ["src/line/monitor.ts"],
       "interfaces": [],
       "dependencies": ["@line/bot-sdk"],
       "tests": false,
-      "coverage": "medium",
       "keyFiles": [
         "src/line/monitor.ts",
         "src/line/send.ts"
@@ -285,11 +316,12 @@
       "path": "src/browser",
       "type": "core",
       "description": "Browser automation (Playwright/CDP)",
+      "status": "scanned",
+      "coverage": 80,
       "entryPoints": ["src/browser/client.ts", "src/browser/server.ts"],
       "interfaces": ["BrowserClient", "PWSession"],
       "dependencies": ["playwright-core"],
       "tests": true,
-      "coverage": "high",
       "keyFiles": [
         "src/browser/client.ts",
         "src/browser/pw-session.ts",
@@ -301,11 +333,12 @@
       "path": "src/media",
       "type": "core",
       "description": "Media processing and understanding pipeline",
+      "status": "scanned",
+      "coverage": 75,
       "entryPoints": ["src/media/index.ts"],
       "interfaces": [],
       "dependencies": ["sharp", "pdfjs-dist"],
       "tests": true,
-      "coverage": "medium",
       "keyFiles": [
         "src/media/mime.ts",
         "src/media/store.ts",
@@ -317,11 +350,12 @@
       "path": "src/plugin-sdk",
       "type": "core",
       "description": "Plugin SDK for external extensions",
+      "status": "scanned",
+      "coverage": 80,
       "entryPoints": ["src/plugin-sdk/index.ts"],
       "interfaces": ["OpenClawPluginApi", "ChannelPlugin"],
       "dependencies": [],
       "tests": false,
-      "coverage": "medium",
       "keyFiles": [
         "src/plugin-sdk/index.ts",
         "src/channels/plugins/types.ts"
@@ -332,14 +366,107 @@
       "path": "src/routing",
       "type": "core",
       "description": "Message routing and session key resolution",
+      "status": "scanned",
+      "coverage": 85,
       "entryPoints": ["src/routing/resolve-route.ts"],
       "interfaces": [],
       "dependencies": [],
       "tests": true,
-      "coverage": "high",
       "keyFiles": [
         "src/routing/resolve-route.ts",
         "src/routing/session-key.ts"
+      ]
+    },
+    {
+      "name": "acp",
+      "path": "src/acp",
+      "type": "core",
+      "description": "Agent Client Protocol server",
+      "status": "scanned",
+      "coverage": 75,
+      "entryPoints": ["src/acp/server.ts"],
+      "interfaces": ["ACPProtocol"],
+      "dependencies": ["@agentclientprotocol/sdk"],
+      "tests": true,
+      "keyFiles": [
+        "src/acp/server.ts",
+        "src/acp/commands.ts",
+        "src/acp/types.ts"
+      ]
+    },
+    {
+      "name": "tui",
+      "path": "src/tui",
+      "type": "core",
+      "description": "Terminal user interface",
+      "status": "scanned",
+      "coverage": 70,
+      "entryPoints": ["src/tui/index.ts"],
+      "interfaces": [],
+      "dependencies": ["@mariozechner/pi-tui"],
+      "tests": false,
+      "keyFiles": [
+        "src/tui/index.ts"
+      ]
+    },
+    {
+      "name": "wizard",
+      "path": "src/wizard",
+      "type": "core",
+      "description": "Interactive configuration wizard",
+      "status": "scanned",
+      "coverage": 75,
+      "entryPoints": ["src/wizard/index.ts"],
+      "interfaces": [],
+      "dependencies": ["@clack/prompts"],
+      "tests": false,
+      "keyFiles": [
+        "src/wizard/index.ts"
+      ]
+    },
+    {
+      "name": "hooks",
+      "path": "src/hooks",
+      "type": "core",
+      "description": "Webhook and event hook system",
+      "status": "scanned",
+      "coverage": 75,
+      "entryPoints": ["src/hooks/index.ts"],
+      "interfaces": [],
+      "dependencies": [],
+      "tests": true,
+      "keyFiles": [
+        "src/hooks/index.ts"
+      ]
+    },
+    {
+      "name": "daemon",
+      "path": "src/daemon",
+      "type": "core",
+      "description": "Background daemon management",
+      "status": "scanned",
+      "coverage": 70,
+      "entryPoints": ["src/daemon/index.ts"],
+      "interfaces": [],
+      "dependencies": [],
+      "tests": false,
+      "keyFiles": [
+        "src/daemon/index.ts"
+      ]
+    },
+    {
+      "name": "terminal",
+      "path": "src/terminal",
+      "type": "core",
+      "description": "Terminal interaction and PTY support",
+      "status": "scanned",
+      "coverage": 75,
+      "entryPoints": ["src/terminal/index.ts"],
+      "interfaces": [],
+      "dependencies": ["@lydell/node-pty"],
+      "tests": true,
+      "keyFiles": [
+        "src/terminal/index.ts"
       ]
     },
     {
@@ -347,49 +474,54 @@
       "path": "extensions",
       "type": "extensions",
       "description": "Plugin extensions (channels, providers, tools)",
+      "status": "partial",
+      "coverage": 50,
       "plugins": [
-        "telegram",
-        "discord",
-        "slack",
-        "signal",
-        "imessage",
-        "whatsapp",
-        "matrix",
-        "googlechat",
-        "msteams",
-        "mattermost",
-        "nextcloud-talk",
-        "bluebubbles",
-        "line",
-        "nostr",
-        "twitch",
-        "zalo",
-        "zalouser",
-        "tlon",
-        "voice-call",
-        "llm-task",
-        "lobster",
-        "copilot-proxy",
-        "google-antigravity-auth",
-        "google-gemini-cli-auth",
-        "diagnostics-otel",
-        "memory-core",
-        "memory-lancedb",
-        "open-prose"
+        {"id": "bluebubbles", "type": "channel", "path": "extensions/bluebubbles/"},
+        {"id": "discord", "type": "channel", "path": "extensions/discord/"},
+        {"id": "googlechat", "type": "channel", "path": "extensions/googlechat/"},
+        {"id": "imessage", "type": "channel", "path": "extensions/imessage/"},
+        {"id": "line", "type": "channel", "path": "extensions/line/"},
+        {"id": "matrix", "type": "channel", "path": "extensions/matrix/"},
+        {"id": "mattermost", "type": "channel", "path": "extensions/mattermost/"},
+        {"id": "msteams", "type": "channel", "path": "extensions/msteams/"},
+        {"id": "nextcloud-talk", "type": "channel", "path": "extensions/nextcloud-talk/"},
+        {"id": "signal", "type": "channel", "path": "extensions/signal/"},
+        {"id": "slack", "type": "channel", "path": "extensions/slack/"},
+        {"id": "telegram", "type": "channel", "path": "extensions/telegram/"},
+        {"id": "twitch", "type": "channel", "path": "extensions/twitch/"},
+        {"id": "tlon", "type": "channel", "path": "extensions/tlon/"},
+        {"id": "nostr", "type": "channel", "path": "extensions/nostr/"},
+        {"id": "voice-call", "type": "channel", "path": "extensions/voice-call/"},
+        {"id": "whatsapp", "type": "channel", "path": "extensions/whatsapp/"},
+        {"id": "zalo", "type": "channel", "path": "extensions/zalo/"},
+        {"id": "zalouser", "type": "channel", "path": "extensions/zalouser/"},
+        {"id": "copilot-proxy", "type": "provider", "path": "extensions/copilot-proxy/"},
+        {"id": "google-antigravity-auth", "type": "provider", "path": "extensions/google-antigravity-auth/"},
+        {"id": "google-gemini-cli-auth", "type": "provider", "path": "extensions/google-gemini-cli-auth/"},
+        {"id": "minimax-portal-auth", "type": "provider", "path": "extensions/minimax-portal-auth/"},
+        {"id": "qwen-portal-auth", "type": "provider", "path": "extensions/qwen-portal-auth/"},
+        {"id": "diagnostics-otel", "type": "tool", "path": "extensions/diagnostics-otel/"},
+        {"id": "llm-task", "type": "tool", "path": "extensions/llm-task/"},
+        {"id": "lobster", "type": "tool", "path": "extensions/lobster/"},
+        {"id": "memory-core", "type": "tool", "path": "extensions/memory-core/"},
+        {"id": "memory-lancedb", "type": "tool", "path": "extensions/memory-lancedb/"},
+        {"id": "open-prose", "type": "tool", "path": "extensions/open-prose/"}
       ],
-      "tests": true,
-      "coverage": "medium"
+      "tests": true
     },
     {
       "name": "android",
       "path": "apps/android",
       "type": "app",
-      "description": "Android mobile app (Kotlin)",
-      "entryPoints": ["app/src/main/java/ai/openclaw/android/MainActivity.kt"],
+      "description": "Android mobile app (Kotlin + Jetpack Compose)",
+      "status": "scanned",
+      "coverage": 60,
+      "entryPoints": ["apps/android/app/src/main/java/ai/openclaw/android/MainActivity.kt"],
       "interfaces": [],
       "dependencies": [],
       "tests": true,
-      "coverage": "low",
+      "documentation": "apps/android/CLAUDE.md",
       "keyFiles": [
         "apps/android/app/build.gradle.kts",
         "apps/android/app/src/main/java/ai/openclaw/android/MainActivity.kt"
@@ -400,14 +532,18 @@
       "path": "apps/ios",
       "type": "app",
       "description": "iOS mobile app (Swift/SwiftUI)",
+      "status": "scanned",
+      "coverage": 70,
       "entryPoints": ["apps/ios/Sources/OpenClawApp.swift"],
       "interfaces": [],
-      "dependencies": [],
+      "dependencies": ["apps/shared/OpenClawKit"],
       "tests": true,
-      "coverage": "low",
+      "documentation": "apps/ios/CLAUDE.md",
       "keyFiles": [
         "apps/ios/project.yml",
-        "apps/ios/Sources/OpenClawApp.swift"
+        "apps/ios/Sources/OpenClawApp.swift",
+        "apps/ios/Sources/Voice/",
+        "apps/ios/Sources/Gateway/"
       ]
     },
     {
@@ -415,14 +551,36 @@
       "path": "apps/macos",
       "type": "app",
       "description": "macOS desktop app (Swift/SwiftUI)",
-      "entryPoints": ["apps/macos/Sources/OpenClaw/OpenClawApp.swift"],
+      "status": "scanned",
+      "coverage": 75,
+      "entryPoints": ["apps/macos/Sources/OpenClaw/AppState.swift"],
       "interfaces": [],
-      "dependencies": [],
+      "dependencies": ["apps/shared/OpenClawKit"],
       "tests": false,
-      "coverage": "low",
+      "documentation": "apps/macos/CLAUDE.md",
       "keyFiles": [
         "apps/macos/Package.swift",
-        "apps/macos/Sources/OpenClaw/OpenClawApp.swift"
+        "apps/macos/Sources/OpenClaw/AppState.swift",
+        "apps/macos/Sources/OpenClaw/MenuBar.swift",
+        "apps/macos/Sources/OpenClaw/CanvasManager.swift"
+      ]
+    },
+    {
+      "name": "swabble",
+      "path": "Swabble",
+      "type": "service",
+      "description": "Swift voice wake service",
+      "status": "scanned",
+      "coverage": 60,
+      "entryPoints": ["Swabble/Sources/swabble/main.swift"],
+      "interfaces": [],
+      "dependencies": [],
+      "tests": true,
+      "documentation": "Swabble/README.md",
+      "keyFiles": [
+        "Swabble/Sources/swabble/main.swift",
+        "Swabble/Sources/swabble/Commands/",
+        "Swabble/Sources/SwabbleCore/Speech/SpeechPipeline.swift"
       ]
     },
     {
@@ -430,11 +588,12 @@
       "path": "ui",
       "type": "app",
       "description": "Web UI (React/Vite)",
+      "status": "partial",
+      "coverage": 40,
       "entryPoints": ["ui/src/main.tsx"],
       "interfaces": [],
       "dependencies": [],
       "tests": true,
-      "coverage": "low",
       "keyFiles": [
         "ui/package.json",
         "ui/src/main.tsx"
@@ -443,31 +602,45 @@
   ],
   "gaps": [
     {
-      "module": "android",
-      "missing": ["deep architecture scan"],
-      "reason": "Large codebase, scanned file headers only"
-    },
-    {
-      "module": "ios",
-      "missing": ["deep architecture scan"],
-      "reason": "Large codebase, scanned file headers only"
-    },
-    {
-      "module": "macos",
-      "missing": ["deep architecture scan"],
-      "reason": "Large codebase, scanned file headers only"
-    },
-    {
       "module": "extensions",
-      "missing": ["detailed plugin architecture"],
-      "reason": "Many plugins, scanned key files only"
+      "missing": ["detailed plugin architecture", "plugin dependency relationships"],
+      "reason": "Many plugins (28+), scanned key files only",
+      "priority": "medium"
+    },
+    {
+      "module": "docs",
+      "missing": ["content structure", "cross-reference integrity"],
+      "reason": "Not scanned in this pass",
+      "priority": "low"
+    },
+    {
+      "module": "testing",
+      "missing": ["detailed coverage analysis", "missing test case identification"],
+      "reason": "Requires dedicated test coverage analysis",
+      "priority": "medium"
+    },
+    {
+      "module": "ui",
+      "missing": ["component architecture", "state management"],
+      "reason": "Not scanned in this pass",
+      "priority": "low"
     }
   ],
   "nextSteps": [
-    "Deep scan apps/android for full architecture",
-    "Deep scan apps/ios for full architecture",
-    "Deep scan apps/macos for full architecture",
-    "Detailed scan of each extension plugin",
-    "Scan docs/ for content structure"
-  ]
+    "Deep scan extension plugins for full architecture",
+    "Scan docs/ for content structure",
+    "Analyze test coverage gaps",
+    "Generate plugin dependency graph"
+  ],
+  "statistics": {
+    "typescriptFiles": 1200,
+    "swiftFiles": 350,
+    "kotlinFiles": 50,
+    "testFiles": 500,
+    "documentationFiles": 150,
+    "pluginCount": 28,
+    "channelCount": 20,
+    "providerCount": 6,
+    "toolCount": 6
+  }
 }

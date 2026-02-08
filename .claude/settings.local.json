@@ -6,7 +6,20 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git pull:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(npx skills find:*)",
+      "Bash(npx skills add:*)",
+      "Bash(defaults read:*)",
+      "Bash(find:*)",
+      "mcp__gms__take_snapshot",
+      "Bash(ghostty:*)",
+      "Bash(fc-list:*)",
+      "WebSearch",
+      "Bash(rg:*)",
+      "Bash(log show:*)",
+      "Bash(comm:*)",
+      "Bash(git clone:*)",
+      "Bash(git fetch:*)"
     ]
   }
 }

@@ -1,6 +1,7 @@
 import { html } from "lit";
 import { repeat } from "lit/directives/repeat.js";
 
+import { getLocale, setLocale, t } from "./i18n";
 import type { AppViewState } from "./app-view-state";
 import { iconForTab, pathForTab, titleForTab, type Tab } from "./navigation";
 import { icons } from "./icons";
@@ -327,5 +328,23 @@ function renderMonitorIcon() {
       <line x1="8" x2="16" y1="21" y2="21"></line>
       <line x1="12" x2="12" y1="17" y2="21"></line>
     </svg>
+  `;
+}
+
+export function renderLanguageToggle() {
+  const current = getLocale();
+  return html`
+    <div class="lang-toggle" style="margin-left: 8px;">
+       <select
+        style="height: 32px; border-radius: 16px; border: 1px solid var(--border-color); background: var(--bg-surface); color: var(--text-primary); padding: 0 12px; cursor: pointer;"
+        @change=${(e: Event) => {
+          setLocale((e.target as HTMLSelectElement).value as any);
+        }}
+        title="Language"
+      >
+        <option value="en" ?selected=${current === "en"}>English</option>
+        <option value="zh" ?selected=${current === "zh"}>中文</option>
+      </select>
+    </div>
   `;
 }
