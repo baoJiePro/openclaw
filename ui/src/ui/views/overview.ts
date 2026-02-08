@@ -1,10 +1,8 @@
 import { html } from "lit";
-
-import { t } from "../i18n";
-import type { GatewayHelloOk } from "../gateway";
-import { formatAgo, formatDurationMs } from "../format";
-import { formatNextRun } from "../presenter";
-import type { UiSettings } from "../storage";
+import type { GatewayHelloOk } from "../gateway.ts";
+import type { UiSettings } from "../storage.ts";
+import { formatAgo, formatDurationMs } from "../format.ts";
+import { formatNextRun } from "../presenter.ts";
 
 export type OverviewProps = {
   connected: boolean;
@@ -31,10 +29,14 @@ export function renderOverview(props: OverviewProps) {
   const uptime = snapshot?.uptimeMs ? formatDurationMs(snapshot.uptimeMs) : "n/a";
   const tick = snapshot?.policy?.tickIntervalMs ? `${snapshot.policy.tickIntervalMs}ms` : "n/a";
   const authHint = (() => {
-    if (props.connected || !props.lastError) return null;
+    if (props.connected || !props.lastError) {
+      return null;
+    }
     const lower = props.lastError.toLowerCase();
     const authFailed = lower.includes("unauthorized") || lower.includes("connect failed");
-    if (!authFailed) return null;
+    if (!authFailed) {
+      return null;
+    }
     const hasToken = Boolean(props.settings.token.trim());
     const hasPassword = Boolean(props.password.trim());
     if (!hasToken && !hasPassword) {
@@ -42,8 +44,8 @@ export function renderOverview(props: OverviewProps) {
         <div class="muted" style="margin-top: 8px">
           ${t("overview.auth.required")}
           <div style="margin-top: 6px">
-            <span class="mono">openclaw dashboard --no-open</span> → ${t("overview.auth.cmd_token")}<br />
-            <span class="mono">openclaw doctor --generate-gateway-token</span> → ${t("overview.auth.cmd_generate")}
+            <span class="mono">openclaw dashboard --no-open</span> → open the Control UI<br />
+            <span class="mono">openclaw doctor --generate-gateway-token</span> → set token
           </div>
           <div style="margin-top: 6px">
             <a
@@ -60,8 +62,7 @@ export function renderOverview(props: OverviewProps) {
     }
     return html`
       <div class="muted" style="margin-top: 8px">
-        ${t("overview.auth.failed")}
-        <span class="mono">openclaw dashboard --no-open</span>${t("overview.auth.failed_suffix")}
+        Auth failed. Update the token or password in Control UI settings, then click Connect.
         <div style="margin-top: 6px">
           <a
             class="session-link"
@@ -76,9 +77,13 @@ export function renderOverview(props: OverviewProps) {
     `;
   })();
   const insecureContextHint = (() => {
-    if (props.connected || !props.lastError) return null;
+    if (props.connected || !props.lastError) {
+      return null;
+    }
     const isSecureContext = typeof window !== "undefined" ? window.isSecureContext : true;
-    if (isSecureContext !== false) return null;
+    if (isSecureContext) {
+      return null;
+    }
     const lower = props.lastError.toLowerCase();
     if (!lower.includes("secure context") && !lower.includes("device identity required")) {
       return null;
