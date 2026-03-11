@@ -1,14 +1,15 @@
+import { t } from "../i18n/index.ts";
 import type { IconName } from "./icons.js";
 import { t } from "./i18n.js";
 
 export const TAB_GROUPS = [
-  { label: "Chat", tabs: ["chat"] },
+  { label: "chat", tabs: ["chat"] },
   {
-    label: "Control",
+    label: "control",
     tabs: ["overview", "channels", "instances", "sessions", "usage", "cron"],
   },
-  { label: "Agent", tabs: ["agents", "skills", "nodes"] },
-  { label: "Settings", tabs: ["config", "debug", "logs"] },
+  { label: "agent", tabs: ["agents", "skills", "nodes"] },
+  { label: "settings", tabs: ["config", "debug", "logs"] },
 ] as const;
 
 export type Tab =
@@ -157,67 +158,9 @@ export function iconForTab(tab: Tab): IconName {
 }
 
 export function titleForTab(tab: Tab) {
-  switch (tab) {
-    case "agents":
-      return "Agents";
-    case "overview":
-      return t("tab.overview");
-    case "channels":
-      return t("tab.channels");
-    case "instances":
-      return t("tab.instances");
-    case "sessions":
-      return "Sessions";
-    case "usage":
-      return "Usage";
-    case "cron":
-      return t("tab.cron");
-    case "skills":
-      return t("tab.skills");
-    case "nodes":
-      return t("tab.nodes");
-    case "chat":
-      return t("tab.chat");
-    case "config":
-      return t("tab.config");
-    case "debug":
-      return t("tab.debug");
-    case "logs":
-      return t("tab.logs");
-    default:
-      return t("tab.control");
-  }
+  return t(`tabs.${tab}`);
 }
 
 export function subtitleForTab(tab: Tab) {
-  switch (tab) {
-    case "agents":
-      return "Manage agent workspaces, tools, and identities.";
-    case "overview":
-      return t("tab.overview.subtitle");
-    case "channels":
-      return t("tab.channels.subtitle");
-    case "instances":
-      return t("tab.instances.subtitle");
-    case "sessions":
-      return "Inspect active sessions and adjust per-session defaults.";
-    case "usage":
-      return "";
-    case "cron":
-      return t("tab.cron.subtitle");
-    case "skills":
-      return t("tab.skills.subtitle");
-    case "nodes":
-      return t("tab.nodes.subtitle");
-    case "chat":
-      return t("tab.chat.subtitle");
-    case "config":
-      return t("tab.config.subtitle");
-    case "debug":
-      return t("tab.debug.subtitle");
-    case "logs":
-      return t("tab.logs.subtitle");
-    default:
-      return "";
-  }
+  return t(`subtitles.${tab}`);
 }
